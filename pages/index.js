@@ -7,7 +7,7 @@ import useStyles from "../src/styles/MainStyles";
 import { Advisory } from "../main/advisory";
 
 const Index = ({ dataSet }) => {
-  const { keySet, excelData } = useContext(DataContext);
+  const { keySet } = useContext(DataContext);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [open_tank, setOpenTank] = useState(false);
@@ -16,7 +16,6 @@ const Index = ({ dataSet }) => {
   const [drought, setDrought] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState(false);
 
-  console.log(excelData());
   const handleClickOpen = (e) => {
     if (e.target.alt == 0) {
       setOpen(!open);

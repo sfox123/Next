@@ -45,19 +45,6 @@ export class Context extends Component {
   }
 
   render() {
-    const excelData = async () => {
-      try {
-        await axios
-          .create(
-            "https://us-central1-express-439e0.cloudfunctions.net/app/apiCall"
-          )
-          .get("/")
-          .then((res) => console.log(res.data))
-          .catch((err) => console.log(err));
-      } catch (error) {
-        console.log(error);
-      }
-    };
     const handleLogin = async ({ email, password }) => {
       try {
         const res = await api.post("/signin", { email, password });
@@ -85,7 +72,6 @@ export class Context extends Component {
             handleLogin,
             handleError,
             setOpen,
-            excelData,
           }}
         >
           {this.props.children}
