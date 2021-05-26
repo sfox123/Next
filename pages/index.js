@@ -15,6 +15,8 @@ const Index = ({ dataSet, excelData }) => {
   const [weatherLocation, setWeatherLocation] = useState(false);
   const [drought, setDrought] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState(false);
+
+  console.log(excelData);
   const handleClickOpen = (e) => {
     if (e.target.alt == 0) {
       setOpen(!open);
@@ -137,8 +139,14 @@ Index.getInitialProps = async (ctx) => {
     "https://us-central1-express-439e0.cloudfunctions.net/app/getWeather"
   );
   const json = await res.json();
+  const excel = await fetch(
+    "https://us-central1-express-439e0.cloudfunctions.net/app/apiCall"
+  );
+  const data = excel.json();
+
   return {
     dataSet: json.agromet,
+    excelData: data,
   };
 };
 
