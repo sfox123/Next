@@ -45,11 +45,9 @@ export class Context extends Component {
 
   render() {
     const handleLogin = async ({ email, password }) => {
-      console.log(email, password);
       try {
         const res = await api.post("/signin", { email, password });
         await this.setState({ isSignedIn: true });
-        await console.log(res.data);
         setOpen(false);
       } catch (error) {
         this.setState({ isError: true });
