@@ -6,7 +6,7 @@ import { DataContext } from "../context/context";
 import useStyles from "../src/styles/MainStyles";
 import { Advisory } from "../main/advisory";
 
-const Index = ({ dataSet, excelData }) => {
+const Index = ({ dataSet }) => {
   const { keySet, excelData } = useContext(DataContext);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -135,18 +135,13 @@ const Index = ({ dataSet, excelData }) => {
 };
 
 Index.getInitialProps = async (ctx) => {
-  try {
-    const res = await fetch(
-      "https://us-central1-express-439e0.cloudfunctions.net/app/getWeather"
-    );
-    const json = await res.json();
-  } catch (error) {
-    console.log(error);
-  }
+  const res = await fetch(
+    "https://us-central1-express-439e0.cloudfunctions.net/app/getWeather"
+  );
+  const json = await res.json();
 
   return {
     dataSet: json.agromet,
-    excelData: data,
   };
 };
 
