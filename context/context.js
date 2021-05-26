@@ -1,6 +1,7 @@
 import React, { Component, createContext, useState } from "react";
 import api from "../api/auth";
 import Alert from "@material-ui/lab/Alert";
+import axios from "axios";
 
 export const DataContext = createContext();
 
@@ -44,6 +45,19 @@ export class Context extends Component {
   }
 
   render() {
+    const excelData = async () => {
+      try {
+        await axios
+          .create(
+            "https://us-central1-express-439e0.cloudfunctions.net/app/apiCall"
+          )
+          .get("/")
+          .then((res) => console.log(res.data))
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
+    };
     const handleLogin = async ({ email, password }) => {
       try {
         const res = await api.post("/signin", { email, password });
@@ -66,7 +80,13 @@ export class Context extends Component {
     return (
       <div>
         <DataContext.Provider
-          value={{ ...this.state, handleLogin, handleError, setOpen }}
+          value={{
+            ...this.state,
+            handleLogin,
+            handleError,
+            setOpen,
+            excelData,
+          }}
         >
           {this.props.children}
         </DataContext.Provider>

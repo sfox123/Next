@@ -7,7 +7,7 @@ import useStyles from "../src/styles/MainStyles";
 import { Advisory } from "../main/advisory";
 
 const Index = ({ dataSet, excelData }) => {
-  const { keySet } = useContext(DataContext);
+  const { keySet, excelData } = useContext(DataContext);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [open_tank, setOpenTank] = useState(false);
@@ -16,7 +16,7 @@ const Index = ({ dataSet, excelData }) => {
   const [drought, setDrought] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState(false);
 
-  console.log(excelData);
+  console.log(excelData());
   const handleClickOpen = (e) => {
     if (e.target.alt == 0) {
       setOpen(!open);
@@ -135,14 +135,14 @@ const Index = ({ dataSet, excelData }) => {
 };
 
 Index.getInitialProps = async (ctx) => {
-  const res = await fetch(
-    "https://us-central1-express-439e0.cloudfunctions.net/app/getWeather"
-  );
-  const json = await res.json();
-  const excel = await fetch(
-    "https://us-central1-express-439e0.cloudfunctions.net/app/apiCall"
-  );
-  const data = excel.json();
+  try {
+    const res = await fetch(
+      "https://us-central1-express-439e0.cloudfunctions.net/app/getWeather"
+    );
+    const json = await res.json();
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     dataSet: json.agromet,
