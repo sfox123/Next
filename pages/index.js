@@ -15,7 +15,6 @@ const Index = ({ dataSet, excelData }) => {
   const [weatherLocation, setWeatherLocation] = useState(false);
   const [drought, setDrought] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState(false);
-  console.log(excelData);
   const handleClickOpen = (e) => {
     if (e.target.alt == 0) {
       setOpen(!open);
