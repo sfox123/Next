@@ -15,6 +15,7 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
 import { DataContext } from "../context/context";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -115,8 +116,9 @@ const ElevationScroll = (props) => {
 };
 
 const Nav = (props) => {
+  const router = useRouter();
   const classes = useStyles();
-  const { handleLogin, isError, handleError, isSignedIn, open, setOpen } =
+  const { handleLogin, isError, open, setOpen, setIsError, isSignedIn } =
     useContext(DataContext);
 
   const [email, setUserName] = useState("");
@@ -138,7 +140,7 @@ const Nav = (props) => {
             <Button
               disableRipple
               component={Link}
-              href="/"
+              href="/chart"
               className={classes.logoContainer}
             >
               <Typography
@@ -203,7 +205,7 @@ const Nav = (props) => {
             <FormControl>
               <Button
                 type="submit"
-                onClick={() => {
+                onClick={async () => {
                   handleLogin({ email, password });
                 }}
                 variant="contained"
@@ -222,7 +224,7 @@ const Nav = (props) => {
                         aria-label="close"
                         color="inherit"
                         size="small"
-                        onClick={handleError}
+                        onClick={setIsError(false)}
                       >
                         <CloseIcon fontSize="inherit" />
                       </IconButton>

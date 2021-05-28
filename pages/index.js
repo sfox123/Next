@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Carousal from "../essentials/carousal";
-import Nav from "../essentials/Nav";
+
 import { DataContext } from "../context/context";
 import useStyles from "../src/styles/MainStyles";
 import { Advisory } from "../main/advisory";
+import { Seasonal } from "../main/seasonal";
+import { Button } from "@material-ui/core";
 
 const Index = ({ dataSet }) => {
   const { keySet } = useContext(DataContext);
@@ -43,92 +45,71 @@ const Index = ({ dataSet }) => {
   return (
     <div>
       <Carousal />
-      <div>
-        <Grid
-          className={classes.customGrid}
-          style={{ textAlign: "center", marginTop: "2rem" }}
-          direction="row"
-          justify="space-evenly"
-          container
-          spacing={0}
-        >
-          <Advisory
-            title={dataSet.advisory.heading}
-            img={keySet.advisory}
-            alt={0}
-            open={open}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.advisory.subHeadings}
-            linkNames={dataSet.advisory.linkNames}
-            links={dataSet.advisory.links}
-          />
-          <Advisory
-            title={dataSet.waterTank.heading}
-            img={keySet.waterTank}
-            alt={1}
-            open={open_tank}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.waterTank.subHeadings}
-            linkNames={dataSet.waterTank.linkNames}
-            links={dataSet.waterTank.links}
-          />
-          <Advisory
-            title={dataSet.rainAnalyse.heading}
-            img={keySet.rainAnalyse}
-            alt={2}
-            open={rain_analysis}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.rainAnalyse.subHeadings}
-            linkNames={dataSet.rainAnalyse.linkNames}
-            links={dataSet.rainAnalyse.links}
-          />
-        </Grid>
-        <Grid
-          className={classes.customGrid}
-          style={{ textAlign: "center", marginTop: "2rem" }}
-          direction="row"
-          justify="space-evenly"
-          container
-          spacing={0}
-        >
-          <Advisory
-            title={dataSet.drought.heading}
-            img={keySet.drought}
-            alt={3}
-            open={drought}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.drought.subHeadings}
-            linkNames={dataSet.drought.linkNames}
-            links={dataSet.drought.links}
-          />
-          <Advisory
-            title={dataSet.weatherAround.heading}
-            img={keySet.weatherAround}
-            alt={4}
-            open={weatherLocation}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.weatherAround.subHeadings}
-            linkNames={dataSet.weatherAround.linkNames}
-            links={dataSet.weatherAround.links}
-          />
-          <Advisory
-            title={dataSet.weatherForecast.heading}
-            img={keySet.weatherForecast}
-            alt={5}
-            open={weatherForecast}
-            click={handleClickOpen}
-            close={handleClose}
-            subHeadings={dataSet.advisory.subHeadings}
-            linkNames={dataSet.advisory.linkNames}
-            links={dataSet.advisory.links}
-          />
-        </Grid>
-      </div>
+      <Grid
+        className={classes.customGrid}
+        style={{ textAlign: "center", marginTop: "2rem" }}
+        direction="row"
+        justify="space-evenly"
+        container
+        spacing={0}
+      >
+        {dataSet.agromet.map((e, i) =>
+          i < 4 ? (
+            <Advisory
+              title={e.heading}
+              alt={i}
+              open={
+                i == 0
+                  ? open
+                  : i == 1
+                  ? open_tank
+                  : i == 2
+                  ? rain_analysis
+                  : i == 3
+                  ? drought
+                  : null
+              }
+              click={handleClickOpen}
+              close={handleClose}
+              subHeadings={e.subHeadings}
+              linkNames={e.linkNames}
+              links={e.links}
+            />
+          ) : null
+        )}
+      </Grid>
+      <Grid
+        className={classes.customGrid}
+        style={{ textAlign: "center", marginTop: "2rem" }}
+        direction="row"
+        justify="center"
+        container
+        spacing={0}
+      >
+        {dataSet.agromet.map((e, i) =>
+          i == 4 ? (
+            <Advisory
+              title={e.heading}
+              alt={i}
+              open={weatherLocation}
+              click={handleClickOpen}
+              close={handleClose}
+              subHeadings={e.subHeadings}
+              linkNames={e.linkNames}
+              links={e.links}
+            />
+          ) : i == 5 ? (
+            <Seasonal
+              title={e.heading}
+              alt={i}
+              open={weatherForecast}
+              click={handleClickOpen}
+              close={handleClose}
+              subHeadings={e.subHeadings}
+            />
+          ) : null
+        )}
+      </Grid>
     </div>
   );
 };
@@ -140,7 +121,7 @@ Index.getInitialProps = async (ctx) => {
   const json = await res.json();
 
   return {
-    dataSet: json.agromet,
+    dataSet: json,
   };
 };
 

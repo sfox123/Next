@@ -1,23 +1,18 @@
-import React, { Component, createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import api from "../api/auth";
-import Alert from "@material-ui/lab/Alert";
-import axios from "axios";
+import { useRouter } from "next/router";
 
 export const DataContext = createContext();
 
-export class Context extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      keySet: {},
-      Steps: [],
-      isSignedIn: false,
-      isError: false,
-      open: false,
-    };
-  }
+export function Context(props) {
+  const router = useRouter();
+  const [keySet, setKeySet] = useState({});
+  const [Steps, setSteps] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
-  componentDidMount() {
+  useEffect(() => {
     const wallSet = [
       {
         label: "img_1",
@@ -40,43 +35,37 @@ export class Context extends Component {
       weatherAround: "/img/wlocation.png",
       weatherForecast: "/img/dropp.png",
     };
-    this.setState({ keySet: keyData });
-    this.setState({ Steps: wallSet });
-  }
+    setKeySet(keyData);
+    setSteps(wallSet);
+  }, []);
 
-  render() {
-    const handleLogin = async ({ email, password }) => {
-      try {
-        const res = await api.post("/signin", { email, password });
-        await this.setState({ isSignedIn: true });
-        setOpen(false);
-      } catch (error) {
-        this.setState({ isError: true });
-        console.log(error);
-      }
-    };
+  const handleLogin = async ({ email, password }) => {
+    try {
+      const res = await api.post("/signin", { email, password });
+      setIsSignedIn(true);
+      router.push("/login");
+      setOpen(false);
+    } catch (error) {
+      setIsError(true);
+    }
+  };
 
-    const setOpen = (e) => {
-      this.setState({ open: e });
-    };
-
-    const handleError = () => {
-      this.setState({ isError: false });
-    };
-
-    return (
-      <div>
-        <DataContext.Provider
-          value={{
-            ...this.state,
-            handleLogin,
-            handleError,
-            setOpen,
-          }}
-        >
-          {this.props.children}
-        </DataContext.Provider>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <DataContext.Provider
+        value={{
+          keySet,
+          open,
+          setOpen,
+          isError,
+          setIsError,
+          Steps,
+          isSignedIn,
+          handleLogin,
+        }}
+      >
+        {props.children}
+      </DataContext.Provider>
+    </div>
+  );
 }

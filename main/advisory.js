@@ -52,7 +52,7 @@ export const Advisory = (props) => {
 
   return (
     <div>
-      <Link style={{ cursor: "pointer" }} key={alt} as={""}>
+      <Link style={{ textDecoration: "none", cursor: "pointer" }} key={alt}>
         <Grid onClick={click} item xs={12} key={title}>
           <Paper className={classes.gridItem}>
             <div>
