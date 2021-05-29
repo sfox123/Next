@@ -217,23 +217,11 @@ const Nav = (props) => {
               </Button>
               <br />
               {isError ? (
-                <Collapse in={isError}>
-                  <Alert
-                    severity="error"
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={setIsError(false)}
-                      >
-                        <CloseIcon fontSize="inherit" />
-                      </IconButton>
-                    }
-                  >
-                    Access Denied !
-                  </Alert>
-                </Collapse>
+                <span
+                  style={{ fontWeight: 500, fontSize: "1rem", color: "red" }}
+                >
+                  Access denied !
+                </span>
               ) : null}
             </FormControl>
           </form>
