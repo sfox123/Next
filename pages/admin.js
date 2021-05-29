@@ -5,14 +5,24 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import axios from "axios";
+import api from "../api/auth";
 
 const Admin = ({ userIn, dataSet }) => {
   const router = useRouter();
-  const [input, setInput] = useState();
 
-  const handleChange = (e) => {
-    setInput(e.target.value);
-    console.log(input);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const link = e.target[0].value;
+    const id = e.target[0].id;
+    const group = e.target[0].placeholder;
+
+    try {
+      const res = await api.post("/changeLink", { link, id, group });
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     !userIn ? router.push("/illegalEntry") : null;
@@ -35,23 +45,24 @@ const Admin = ({ userIn, dataSet }) => {
                     <Typography style={{ marginBottom: "1rem" }} variant="h5">
                       {e.heading}
                     </Typography>
-                    {e.linkNames.map((el, i) => (
+                    {e.linkNames.map((el, index) => (
                       <div>
-                        <TextField
-                          id="standard-textarea"
-                          label={el}
-                          placeholder="Confidential"
-                          multiline
-                          onChange={handleChange}
-                        />
-                        <Button
-                          onClick={() => console.log("Clicked")}
-                          style={{ marginTop: "1rem", marginLeft: "1.5rem" }}
-                          variant="contained"
-                          color="primary"
-                        >
-                          change
-                        </Button>
+                        <form onSubmit={handleSubmit}>
+                          <TextField
+                            id={index}
+                            label={el}
+                            placeholder={i}
+                            multiline
+                          />
+                          <Button
+                            style={{ marginTop: "1rem", marginLeft: "1.5rem" }}
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                          >
+                            change
+                          </Button>
+                        </form>
                       </div>
                     ))}
                   </div>
