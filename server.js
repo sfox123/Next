@@ -30,12 +30,12 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(3000, (err) => {
-    if (err) throw err;
-    console.log("> Now serving on localhost:3000");
-  });
-  //   server.listen(process.env.PORT, (err) => {
+  //   server.listen(3000, (err) => {
   //     if (err) throw err;
   //     console.log("> Now serving on localhost:3000");
   //   });
+  server.listen(process.env.PORT, (err) => {
+    if (err) throw err;
+    console.log("> Now serving on localhost:3000");
+  });
 });
