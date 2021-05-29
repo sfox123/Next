@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import cookieCutter from "cookie-cutter";
 import api from "../api/auth";
 import { useRouter } from "next/router";
 
@@ -42,8 +43,12 @@ export function Context(props) {
   const handleLogin = async ({ email, password }) => {
     try {
       const res = await api.post("/signin", { email, password });
+      const token = await res.data.token;
       setIsSignedIn(true);
-      router.push("/login");
+      router.push(`/admin?id=${token}`, `/admin.console`, {
+        locale: token,
+      });
+      cookieCutter.set("token", token);
       setOpen(false);
     } catch (error) {
       setIsError(true);

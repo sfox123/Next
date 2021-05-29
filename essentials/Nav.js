@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     height: "4.5em",
   },
   toolbarMargin: {
+    marginBottom: "5rem",
     padding: 0,
   },
   tabContainer: {
@@ -140,7 +141,7 @@ const Nav = (props) => {
             <Button
               disableRipple
               component={Link}
-              href="/chart"
+              href="/"
               className={classes.logoContainer}
             >
               <Typography
