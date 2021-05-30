@@ -12,6 +12,7 @@ export function Context(props) {
   const [isError, setIsError] = useState(false);
   const [open, setOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const wallSet = [
@@ -45,6 +46,7 @@ export function Context(props) {
       const res = await api.post("/signin", { email, password });
       const token = await res.data.token;
       setIsSignedIn(true);
+      setLoading(false);
       router.push(`/admin?id=${token}`, `/admin.console`, {
         locale: token,
       });
@@ -52,6 +54,7 @@ export function Context(props) {
       setOpen(false);
     } catch (error) {
       setIsError(true);
+      setLoading(false);
     }
   };
 
@@ -67,6 +70,8 @@ export function Context(props) {
           Steps,
           isSignedIn,
           handleLogin,
+          loading,
+          setLoading,
         }}
       >
         {props.children}

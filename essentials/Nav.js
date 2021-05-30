@@ -10,10 +10,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import { Typography } from "@material-ui/core";
-import Collapse from "@material-ui/core/Collapse";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
-import Alert from "@material-ui/lab/Alert";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { DataContext } from "../context/context";
 import { useRouter } from "next/router";
 
@@ -119,8 +118,15 @@ const ElevationScroll = (props) => {
 const Nav = (props) => {
   const router = useRouter();
   const classes = useStyles();
-  const { handleLogin, isError, open, setOpen, setIsError, isSignedIn } =
-    useContext(DataContext);
+  const {
+    handleLogin,
+    isError,
+    open,
+    setOpen,
+    loading,
+    setLoading,
+    isSignedIn,
+  } = useContext(DataContext);
 
   const [email, setUserName] = useState("");
   const [password, setPassWord] = useState("");
@@ -207,6 +213,7 @@ const Nav = (props) => {
               <Button
                 type="submit"
                 onClick={async () => {
+                  setLoading(true);
                   handleLogin({ email, password });
                 }}
                 variant="contained"
@@ -215,6 +222,7 @@ const Nav = (props) => {
               >
                 Login
               </Button>
+              {loading && <CircularProgress />}
               <br />
               {isError ? (
                 <span
