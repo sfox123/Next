@@ -3,10 +3,12 @@ const next = require("next");
 const cookieParser = require("cookie-parser");
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
+const cors = require("cors");
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = express();
+  server.use(cors());
   server.use(cookieParser());
 
   server.get("/admin.console", (req, res) => {
