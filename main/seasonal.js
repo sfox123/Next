@@ -80,30 +80,17 @@ export const Seasonal = (props) => {
           {title}
         </DialogTitle>
         <DialogContent className={classes.dialogContent} dividers>
-          {Object.keys(subHeadings).map((el, i) => (
+          {subHeadings.map((el, i) => (
             <>
-              <Typography key={i} variant="h6" component="h6" gutterBottom>
-                {el}
-              </Typography>
-              <div
-                style={{
-                  display: "contents",
-                  alignSelf: "center",
-                  padding: "1rem",
-                }}
-              >
-                {subHeadings[el].linkNames.map((e, i) => (
-                  <Link
-                    key={i}
-                    style={{ margin: "1rem" }}
-                    target="_blank"
-                    href={subHeadings[el].links[i]}
-                  >
-                    {e}
-                  </Link>
-                ))}
-              </div>
-              <br />
+              <Typography variant="h6">{el[0]}</Typography>
+
+              {i == 0 ? (
+                el.map((e, i) => console.log(e[1][0]))
+              ) : (
+                <Link target="_blank" href={el[2]}>
+                  {el[1]}
+                </Link>
+              )}
             </>
           ))}
         </DialogContent>

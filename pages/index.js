@@ -87,25 +87,16 @@ const Index = ({ dataSet }) => {
         spacing={0}
       >
         {dataSet.agromet.map((e, i) =>
-          i == 4 ? (
+          i >= 4 ? (
             <Advisory
               title={e.heading}
               alt={i}
-              open={weatherLocation}
+              open={i == 4 ? weatherLocation : weatherForecast}
               click={handleClickOpen}
               close={handleClose}
               subHeadings={e.subHeadings}
               linkNames={e.linkNames}
               links={e.links}
-            />
-          ) : i == 5 ? (
-            <Seasonal
-              title={e.heading}
-              alt={i}
-              open={weatherForecast}
-              click={handleClickOpen}
-              close={handleClose}
-              subHeadings={e.subHeadings}
             />
           ) : null
         )}

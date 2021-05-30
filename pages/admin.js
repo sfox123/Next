@@ -15,8 +15,7 @@ const Admin = ({ userIn, dataSet }) => {
     e.preventDefault();
     const link = e.target[0].value;
     const id = e.target[0].id;
-    const group = e.target[0].placeholder;
-
+    const group = e.target[2].id;
     try {
       const res = await api.post("/changeLink", { link, id, group });
       console.log(res.data);
@@ -33,54 +32,39 @@ const Admin = ({ userIn, dataSet }) => {
       <ul>
         {dataSet.map((e, i) => (
           <>
-            {
-              i < 5 ? (
-                <Grid
-                  style={{ textAlign: "center", marginTop: "2rem" }}
-                  direction="row"
-                  container
-                  spacing={0}
-                >
-                  <div style={{ textAlign: "left", display: "grid" }}>
-                    <Typography style={{ marginBottom: "1rem" }} variant="h5">
-                      {e.heading}
-                    </Typography>
-                    {e.linkNames.map((el, index) => (
-                      <div>
-                        <form onSubmit={handleSubmit}>
-                          <TextField
-                            id={index}
-                            label={el}
-                            placeholder={i}
-                            multiline
-                          />
-                          <Button
-                            style={{ marginTop: "1rem", marginLeft: "1.5rem" }}
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                          >
-                            change
-                          </Button>
-                        </form>
-                      </div>
-                    ))}
+            <Grid
+              style={{ textAlign: "center", marginTop: "2rem" }}
+              direction="row"
+              container
+              spacing={0}
+            >
+              <div key={i} style={{ textAlign: "left", display: "grid" }}>
+                <Typography style={{ marginBottom: "1rem" }} variant="h5">
+                  {e.heading}
+                </Typography>
+                {e.linkNames.map((el, index) => (
+                  <div>
+                    <form onSubmit={handleSubmit}>
+                      <TextField
+                        id={index}
+                        label={el}
+                        placeholder={el}
+                        multiline
+                      />
+                      <Button
+                        style={{ marginTop: "1rem", marginLeft: "1.5rem" }}
+                        id={i}
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                      >
+                        change
+                      </Button>
+                    </form>
                   </div>
-                </Grid>
-              ) : null
-              // <Grid
-              //   style={{ textAlign: "center", marginTop: "2rem" }}
-              //   direction="row"
-              //   justify="center"
-              //   container
-              //   spacing={0}
-              // >
-              //   <Typography variant="h5">{e.heading}</Typography>
-              //   {Object.keys(e.subHeadings).map((e) => {
-              //     <Typography variant="h6">{e}</Typography>;
-              //   })}
-              // </Grid>
-            }
+                ))}
+              </div>
+            </Grid>
           </>
         ))}
       </ul>
