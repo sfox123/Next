@@ -82,7 +82,7 @@ const Index = ({ dataSet }) => {
         className={classes.customGrid}
         style={{ textAlign: "center", marginTop: "2rem" }}
         direction="row"
-        justify="center"
+        justify="space-around"
         container
         spacing={0}
       >

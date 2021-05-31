@@ -51,10 +51,10 @@ export const Advisory = (props) => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div key={alt}>
       <Link style={{ textDecoration: "none", cursor: "pointer" }} key={alt}>
         <Grid onClick={click} item xs={12} key={title}>
-          <Paper className={classes.gridItem}>
+          <Paper style={{ boxShadow: "none" }} className={classes.gridItem}>
             <div>
               <Image
                 src={`/img/${alt}.png`}
