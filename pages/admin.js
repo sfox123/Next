@@ -33,8 +33,8 @@ const Admin = ({ userIn, dataSet }) => {
     <div>
       <ul>
         {success && (
-          <Alert severity="success">
-            This is a success alert — check it out!
+          <Alert onClose={() => setSuccess(false)} severity="success">
+            Successfully changed
           </Alert>
         )}
         {dataSet.map((e, i) => (
