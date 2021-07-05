@@ -17,6 +17,7 @@ const Index = ({ dataSet }) => {
   const [weatherLocation, setWeatherLocation] = useState(false);
   const [drought, setDrought] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState(false);
+  const [predicted, setPredicted] = useState(false);
 
   const handleClickOpen = (e) => {
     if (e.target.alt == 0) {
@@ -31,6 +32,8 @@ const Index = ({ dataSet }) => {
       setWeatherLocation(!weatherLocation);
     } else if (e.target.alt == 5) {
       setWeatherForecast(!weatherForecast);
+    } else if (e.target.alt == 6) {
+      setPredicted(!predicted);
     }
   };
   const handleClose = (e) => {
@@ -40,6 +43,7 @@ const Index = ({ dataSet }) => {
     setWeatherLocation(false);
     setWeatherForecast(false);
     setDrought(false);
+    setPredicted(false);
   };
 
   return (
@@ -91,7 +95,9 @@ const Index = ({ dataSet }) => {
             <Advisory
               title={e.heading}
               alt={i}
-              open={i == 4 ? weatherLocation : weatherForecast}
+              open={
+                i == 4 ? weatherLocation : i == 5 ? weatherForecast : predicted
+              }
               click={handleClickOpen}
               close={handleClose}
               subHeadings={e.subHeadings}
