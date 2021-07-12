@@ -7,10 +7,13 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
 import api from "../api/auth";
+import { parse } from "papaparse";
+import { post } from "../src/server/controllers/apiGatewayClient";
 
 const Admin = ({ userIn, dataSet }) => {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
+  const [csvData, setCSVData] = useState([]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const link = e.target[0].value;
@@ -25,10 +28,40 @@ const Admin = ({ userIn, dataSet }) => {
       alert("Server Error Please Try Again");
     }
   };
+
+  const convertCsvToJson = (dataTransfer) => {
+    Array.from(dataTransfer)
+      .filter((file) => file.type === "text/csv")
+      .forEach(async (file) => {
+        const text = await file.text();
+        // console.log(text);
+        const result = parse(text, { header: true });
+        // console.log(result);
+        const { data } = result;
+        setCSVData({ csvData: data });
+      });
+  };
+  async function enterTemperatureRecord() {
+    // const dataRecord = csvData.csvData[4];
+    csvData.csvData.map(async (obj, index) => {
+      const body = {
+        id: String(index),
+        day: obj.day,
+        month: obj.month,
+        predicted_temp: obj["predicted temperature(C)"],
+        year: obj.year,
+      }
+      console.log("CSV Body: ", body)
+      const response = await post("/temperature", body);
+      console.log("This is the post response: ", response);
+    });
+    
+    
+  }
   useEffect(() => {
     !userIn ? router.push("/illegalEntry") : null;
   }, []);
-
+  // console.log("STATE: ", csvData);
   return (
     <div>
       <ul>
@@ -75,6 +108,55 @@ const Admin = ({ userIn, dataSet }) => {
           </>
         ))}
       </ul>
+      <Grid
+        style={{ textAlign: "center", marginTop: "2rem" }}
+        direction="row"
+        container
+        spacing={0}
+      >
+        <div style={{ textAlign: "left", display: "grid" }}>
+          <Typography style={{ marginBottom: "1rem" }} variant="h5">
+            Temperature Prediction
+          </Typography>
+          <div>
+            {/* <TextField
+                        id={index}
+                        label={el}
+                        placeholder={el}
+                        multiline
+                      /> */}
+            <div
+              style={{
+                width: "500px",
+                padding: "30px",
+                border: "solid 1px black",
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                console.log(e.dataTransfer.files);
+                convertCsvToJson(e.dataTransfer.files);
+              }}
+            >
+              Drag and drop csv files
+            </div>
+            <Button
+              style={{ marginTop: "1rem", marginLeft: "1.5rem" }}
+              // id={i}
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={() => {
+                enterTemperatureRecord();
+              }}
+            >
+              Upload CSV
+            </Button>
+          </div>
+        </div>
+      </Grid>
     </div>
   );
 };
