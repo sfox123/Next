@@ -6,6 +6,10 @@ import Line from "./chart";
 import Data from "../../src/json/csvjson.json";
 import Box from "@material-ui/core/Box";
 import { useEffect, useState } from "react";
+import {
+  getContent,
+  post,
+} from "../../src/server/controllers/apiGatewayClient";
 
 const Vavuniya = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -13,6 +17,7 @@ const Vavuniya = (props) => {
   const [open, setOpen] = useState(false);
   const [key, setKey] = useState(null);
   const [index, setIndex] = useState(null);
+  const [tempData, setTempData] = useState([]);
   const months = [
     "January",
     "Febraury",
@@ -28,30 +33,61 @@ const Vavuniya = (props) => {
     "December",
   ];
   useEffect(() => {
-    dataSet.length = 0;
-    Data.map((x, i) =>
-      x.year == 2021 && x.month == 1
-        ? dataSet.push([x.day, x["predicted temperature(C)"]])
-        : null
-    );
-    dataSet.unshift(["x", "rainfall"]);
+    async function getRainfallData() {
+      const response = await getContent("/temperature");
+      const {
+        data: { Items },
+      } = response;
+      setTempData(Items);
+      formatData(Items);
+    }
+    getRainfallData();
+
+    function formatData(Items) {
+      dataSet.length = 0;
+      sortDataSetInitially(Items)
+      // const sortedData =  monthData.sort((a,b) => (a.day > b.day) ? 1 : (a.day < b.day) ? -1 : 0)
+      // Items.length
+      //   ? Items.map((x, i) => {
+      //       parseInt(x.year) == 2021 && parseInt(x.month) == 1
+      //         ? dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+      //         : null;
+      //     })
+      //   : null;
+      dataSet.unshift(["x", "rainfall"]);
+    }
   }, []);
   const handleClick = (e) => {
     setAnchorEl(e.currentTarget);
     setOpen(true);
   };
-
+  const sortDataSetInitially = (dataArray) => {
+    dataSet.length = 0
+    const monthData = dataArray.length ? dataArray.filter(el => parseInt(el.year) === 2021 && parseInt(el.month) === 1) : null
+    const sortedMonthData = monthData.sort((a,b) => (parseInt(a.day) > parseInt(b.day) ? 1 : (parseInt(a.day) < parseInt(b.day) ? -1 : 0)))
+    sortedMonthData.map((x, i) => {
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+    })
+  };
+  const sortDataOnChange = (dataArray, index) => {
+    dataSet.length = 0
+    const monthData = dataArray.length ? dataArray.filter(el => parseInt(el.year) === 2021 && parseInt(el.month) === index) : null
+    const sortedMonthData = monthData.sort((a,b) => (parseInt(a.day) > parseInt(b.day) ? 1 : (parseInt(a.day) < parseInt(b.day) ? -1 : 0)))
+    sortedMonthData.map((x, i) => {
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+    })
+  }
   const handleData = (x, i) => {
     setKey(x);
     setIndex(i);
     dataSet.length = 0;
-    Data.map((x, i) =>
-      x.year == 2021 && x.month == index
-        ? dataSet.push([x.day, x["predicted temperature(C)"]])
-        : null
-    );
+    // tempData.map((x, i) =>
+    //   parseInt(x.year) == 2021 && parseInt(x.month) == index
+    //     ? dataSet.push([parseInt(x.day), parseInt(x.predicted_temp)])
+    //     : null
+    //   );
+    sortDataOnChange(tempData, i + 1)
     dataSet.unshift(["x", "rainfall"]);
-    console.log(dataSet);
   };
 
   const handleClose = (e) => {
@@ -67,7 +103,6 @@ const Vavuniya = (props) => {
           aria-controls="simple-menu"
           aria-haspopup="true"
           variant="contained"
-          
           color="primary"
           onClick={handleClick}
         >
