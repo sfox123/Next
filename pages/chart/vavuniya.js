@@ -6,6 +6,10 @@ import Line from "./chart";
 import Data from "../../src/json/csvjson.json";
 import Box from "@material-ui/core/Box";
 import { useEffect, useState } from "react";
+import {
+  getContent,
+  post,
+} from "../../src/server/controllers/apiGatewayClient";
 
 const Vavuniya = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -47,7 +51,42 @@ const Vavuniya = (props) => {
     setAnchorEl(e.currentTarget);
     setOpen(true);
   };
-
+  const sortDataSetInitially = (dataArray) => {
+    dataSet.length = 0;
+    const monthData = dataArray.length
+      ? dataArray.filter(
+          (el) => parseInt(el.year) === 2021 && parseInt(el.month) === 1
+        )
+      : null;
+    const sortedMonthData = monthData.sort((a, b) =>
+      parseInt(a.day) > parseInt(b.day)
+        ? 1
+        : parseInt(a.day) < parseInt(b.day)
+        ? -1
+        : 0
+    );
+    sortedMonthData.map((x, i) => {
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)]);
+    });
+  };
+  const sortDataOnChange = (dataArray, index) => {
+    dataSet.length = 0;
+    const monthData = dataArray.length
+      ? dataArray.filter(
+          (el) => parseInt(el.year) === 2021 && parseInt(el.month) === index
+        )
+      : null;
+    const sortedMonthData = monthData.sort((a, b) =>
+      parseInt(a.day) > parseInt(b.day)
+        ? 1
+        : parseInt(a.day) < parseInt(b.day)
+        ? -1
+        : 0
+    );
+    sortedMonthData.map((x, i) => {
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)]);
+    });
+  };
   const handleData = (x, i) => {
     setKey(x);
     setIndex(i + 1);
