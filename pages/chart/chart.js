@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Chart from "react-google-charts";
 
 const Line = (props) => {
-  const { month, index, data } = props;
+  const { month, index, data, year } = props;
 
   return (
     <>
@@ -14,7 +14,7 @@ const Line = (props) => {
         data={data}
         options={{
           hAxis: {
-            title: month == null ? "January" : month,
+            title: month == null ? "January - 2021" : month + "-" + year,
           },
           vAxis: {
             title: "Temperature (C)",

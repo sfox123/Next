@@ -9,10 +9,14 @@ import { useEffect, useState } from "react";
 
 const Vavuniya = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [dataSet, setDataSet] = useState([]);
+  const [anchorEle, setAnchorEle] = useState(null);
+  const [dataSet, setDataSet] = useState([["x", "rainfall"]]);
   const [open, setOpen] = useState(false);
+  const [openYear, setOpenYear] = useState(false);
   const [key, setKey] = useState(null);
-  const [index, setIndex] = useState(null);
+  const [year, setYear] = useState(2021);
+  const [index, setIndex] = useState(0);
+  const years = [2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
   const months = [
     "January",
     "Febraury",
@@ -28,14 +32,17 @@ const Vavuniya = (props) => {
     "December",
   ];
   useEffect(() => {
-    dataSet.length = 0;
+    dataSet.length = 1;
     Data.map((x, i) =>
       x.year == 2021 && x.month == 1
         ? dataSet.push([x.day, x["predicted temperature(C)"]])
         : null
     );
-    dataSet.unshift(["x", "rainfall"]);
   }, []);
+  const handleClickYear = (e) => {
+    setOpenYear(true);
+    setAnchorEle(e.currentTarget);
+  };
   const handleClick = (e) => {
     setAnchorEl(e.currentTarget);
     setOpen(true);
@@ -43,42 +50,56 @@ const Vavuniya = (props) => {
 
   const handleData = (x, i) => {
     setKey(x);
-    setIndex(i);
-    dataSet.length = 0;
-    Data.map((x, i) =>
-      x.year == 2021 && x.month == index
-        ? dataSet.push([x.day, x["predicted temperature(C)"]])
+    setIndex(i + 1);
+    dataSet.length = 1;
+
+    Data.map((data, index) =>
+      data.year == year && data.month == i + 1
+        ? dataSet.push([data.day, data["predicted temperature(C)"]])
         : null
     );
-    dataSet.unshift(["x", "rainfall"]);
-    console.log(dataSet);
   };
+  const handleDataYear = (z) => {
+    setYear(z);
+    dataSet.length = 1;
 
+    Data.map((data, i) =>
+      data.year == z && data.month == index + 1
+        ? dataSet.push([data.day, data["predicted temperature(C)"]])
+        : null
+    );
+  };
   const handleClose = (e) => {
     setAnchorEl(null);
     setOpen(false);
   };
+  const handleCloseYear = (e) => {
+    setAnchorEle(null);
+    setOpenYear(false);
+  };
 
   return (
     <div style={{ textAlign: "end", maxWidth: "75%" }}>
+      <div style={{ marginTop: "10rem" }} />
       <Box textAlign="center" justifyContent="center">
-        <h1>HEY I'm Vavuniya CHANGED</h1>
         <Button
           aria-controls="simple-menu"
           aria-haspopup="true"
           variant="contained"
-          
           color="primary"
           onClick={handleClick}
         >
           {key == null ? "January" : key}
         </Button>
         <Button
+          aria-controls="simple-menu-year"
+          aria-haspopup="true"
           style={{ marginLeft: "20px" }}
           color="primary"
           variant="contained"
+          onClick={handleClickYear}
         >
-          2021
+          {year}
         </Button>
       </Box>
 
@@ -101,7 +122,26 @@ const Vavuniya = (props) => {
           ))}
         </Menu>
       </div>
-      <Line data={dataSet} month={key} index={index} />
+      <div>
+        <Menu
+          id="simple-menu-year"
+          anchorEl={anchorEle}
+          open={openYear}
+          onClose={handleCloseYear}
+        >
+          {years.map((z, i) => (
+            <MenuItem
+              onClick={() => {
+                handleCloseYear();
+                handleDataYear(z);
+              }}
+            >
+              {z}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+      <Line data={dataSet} month={key} year={year} index={index} />
     </div>
   );
 };
