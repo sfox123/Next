@@ -6,6 +6,7 @@ import Line from "./chart";
 import Data from "../../src/json/csvjson.json";
 import Box from "@material-ui/core/Box";
 import { useEffect, useState } from "react";
+import TableComponent from "../../src/tables/temperatureTable"
 import {
   getContent,
   post,
@@ -13,14 +14,12 @@ import {
 
 const Vavuniya = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorEle, setAnchorEle] = useState(null);
-  const [dataSet, setDataSet] = useState([["x", "rainfall"]]);
+  const [dataSet, setDataSet] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openYear, setOpenYear] = useState(false);
   const [key, setKey] = useState(null);
-  const [year, setYear] = useState(2021);
-  const [index, setIndex] = useState(0);
-  const years = [2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const [index, setIndex] = useState(null);
+  const [tempData, setTempData] = useState([]);
+  const [sortedData, setSortedData] = useState([])
   const months = [
     "January",
     "Febraury",
@@ -36,90 +35,74 @@ const Vavuniya = (props) => {
     "December",
   ];
   useEffect(() => {
-    dataSet.length = 1;
-    Data.map((x, i) =>
-      x.year == 2021 && x.month == 1
-        ? dataSet.push([x.day, x["predicted temperature(C)"]])
-        : null
-    );
+    async function getRainfallData() {
+      const response = await getContent("/temperature");
+      const {
+        data: { Items },
+      } = response;
+      setTempData(Items);
+      formatData(Items);
+    }
+    getRainfallData();
+
+    function formatData(Items) {
+      console.log()
+      dataSet.length = 0;
+      sortDataSetInitially(Items)
+      // const sortedData =  monthData.sort((a,b) => (a.day > b.day) ? 1 : (a.day < b.day) ? -1 : 0)
+      // Items.length
+      //   ? Items.map((x, i) => {
+      //       parseInt(x.year) == 2021 && parseInt(x.month) == 1
+      //         ? dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+      //         : null;
+      //     })
+      //   : null;
+      dataSet.unshift(["x", "rainfall"]);
+    }
   }, []);
-  const handleClickYear = (e) => {
-    setOpenYear(true);
-    setAnchorEle(e.currentTarget);
-  };
   const handleClick = (e) => {
     setAnchorEl(e.currentTarget);
     setOpen(true);
   };
   const sortDataSetInitially = (dataArray) => {
-    dataSet.length = 0;
-    const monthData = dataArray.length
-      ? dataArray.filter(
-          (el) => parseInt(el.year) === 2021 && parseInt(el.month) === 1
-        )
-      : null;
-    const sortedMonthData = monthData.sort((a, b) =>
-      parseInt(a.day) > parseInt(b.day)
-        ? 1
-        : parseInt(a.day) < parseInt(b.day)
-        ? -1
-        : 0
-    );
+    setSortedData({sortedData: []})
+    dataSet.length = 0
+    const monthData = dataArray.length ? dataArray.filter(el => parseInt(el.year) === 2021 && parseInt(el.month) === 1) : null
+    const sortedMonthData = monthData.sort((a,b) => (parseInt(a.day) > parseInt(b.day) ? 1 : (parseInt(a.day) < parseInt(b.day) ? -1 : 0)))
+    setSortedData(sortedMonthData)
     sortedMonthData.map((x, i) => {
-      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)]);
-    });
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+    })
   };
   const sortDataOnChange = (dataArray, index) => {
-    dataSet.length = 0;
-    const monthData = dataArray.length
-      ? dataArray.filter(
-          (el) => parseInt(el.year) === 2021 && parseInt(el.month) === index
-        )
-      : null;
-    const sortedMonthData = monthData.sort((a, b) =>
-      parseInt(a.day) > parseInt(b.day)
-        ? 1
-        : parseInt(a.day) < parseInt(b.day)
-        ? -1
-        : 0
-    );
+    setSortedData({sortedData: []})
+    dataSet.length = 0
+    const monthData = dataArray.length ? dataArray.filter(el => parseInt(el.year) === 2021 && parseInt(el.month) === index) : null
+    const sortedMonthData = monthData.sort((a,b) => (parseInt(a.day) > parseInt(b.day) ? 1 : (parseInt(a.day) < parseInt(b.day) ? -1 : 0)))
+    setSortedData(sortedMonthData)
     sortedMonthData.map((x, i) => {
-      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)]);
-    });
-  };
+      dataSet.push([parseInt(x.day), parseFloat(x.predicted_temp)])
+    })
+  }
   const handleData = (x, i) => {
     setKey(x);
-    setIndex(i + 1);
-    dataSet.length = 1;
-
-    Data.map((data, index) =>
-      data.year == year && data.month == i + 1
-        ? dataSet.push([data.day, data["predicted temperature(C)"]])
-        : null
-    );
+    setIndex(i);
+    dataSet.length = 0;
+    // tempData.map((x, i) =>
+    //   parseInt(x.year) == 2021 && parseInt(x.month) == index
+    //     ? dataSet.push([parseInt(x.day), parseInt(x.predicted_temp)])
+    //     : null
+    //   );
+    sortDataOnChange(tempData, i + 1)
+    dataSet.unshift(["x", "rainfall"]);
   };
-  const handleDataYear = (z) => {
-    setYear(z);
-    dataSet.length = 1;
 
-    Data.map((data, i) =>
-      data.year == z && data.month == index + 1
-        ? dataSet.push([data.day, data["predicted temperature(C)"]])
-        : null
-    );
-  };
   const handleClose = (e) => {
     setAnchorEl(null);
     setOpen(false);
   };
-  const handleCloseYear = (e) => {
-    setAnchorEle(null);
-    setOpenYear(false);
-  };
-
   return (
     <div style={{ textAlign: "end", maxWidth: "75%" }}>
-      <div style={{ marginTop: "10rem" }} />
       <Box textAlign="center" justifyContent="center">
         <Button
           aria-controls="simple-menu"
@@ -131,14 +114,11 @@ const Vavuniya = (props) => {
           {key == null ? "January" : key}
         </Button>
         <Button
-          aria-controls="simple-menu-year"
-          aria-haspopup="true"
           style={{ marginLeft: "20px" }}
           color="primary"
           variant="contained"
-          onClick={handleClickYear}
         >
-          {year}
+          2021
         </Button>
       </Box>
 
@@ -161,26 +141,8 @@ const Vavuniya = (props) => {
           ))}
         </Menu>
       </div>
-      <div>
-        <Menu
-          id="simple-menu-year"
-          anchorEl={anchorEle}
-          open={openYear}
-          onClose={handleCloseYear}
-        >
-          {years.map((z, i) => (
-            <MenuItem
-              onClick={() => {
-                handleCloseYear();
-                handleDataYear(z);
-              }}
-            >
-              {z}
-            </MenuItem>
-          ))}
-        </Menu>
-      </div>
-      <Line data={dataSet} month={key} year={year} index={index} />
+      <Line data={dataSet} month={key} index={index} />
+      <TableComponent sortedData={sortedData.length ? sortedData : null}/>
     </div>
   );
 };
